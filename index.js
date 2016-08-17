@@ -198,24 +198,61 @@ exports.scraper = function(opts, callback){
 	}
 	else
 	{
-		var selectors = {
-			brand: '[itemprop="brand"]',
-			description: '[itemprop="description"]',
-			title: 'meta[property="og:title"]@content',
-			image: xDelay('[itemprop="image"]@src'),
-			price: '[itemprop="price"]'
-		};
+        var selectors = {
+            brand: '[itemprop="brand"]',
+            // --------- title --------------
+            og_title: 'meta[property="og:title"]@content',
+            twitter_title: 'meta[name="twitter:title"]@content',
+            meta_title: 'meta[name="title"]',
+            title: 'title',
+            // ---------- description -------
+            og_description: 'meta[property="og:description"]@content',
+            twitter_description: 'meta[name="twitter:description"]@content',
+            description: '[itemprop="description"]',
+            // ---------- image --------------
+            og_image: xDelay('meta[property="og:image"]@content'),
+            // Some websites use twitter:image, some use twitter:image:src, make sure we cover both.
+            twitter_image: xDelay('meta[name="twitter:image"]@content'),
+            twitter_meta_image: xDelay('meta[property="twitter:image:src"]'), // need example website to test
+            prop_image: xDelay('[itemprop="image"]@src'),
+            // -------- price ----------------
+            price: '[itemprop="price"]'
+        };
 
 		x(opts.url, selectors)
-		(function(err, obj){
+        (function(err, obj){
+            // prefer og_title over twitter_title over meta_title over title
+            if (obj.hasOwnProperty('og_title')) {
+                obj.title = obj.og_title;
+            } else if (obj.hasOwnProperty('twitter_title')) {
+                obj.title = obj.twitter_title;
+            } else if (obj.hasOwnProperty('meta_title')) {
+                obj.title = obj.meta_title;
+            }
 
-			self.images(opts.url, function(images){
-				obj.images = images;
-				callback(obj);
-			});
+            if (obj.hasOwnProperty('og_description')) {
+                obj.description = obj.og_description;
+            } else if (obj.hasOwnProperty('twitter_description')) {
+                obj.description = obj.twitter_description;
+            }
 
-		});
-	}
+            if (obj.hasOwnProperty('og_image')) {
+                obj.image = obj.og_image;
+            } else if (obj.hasOwnProperty('twitter_image')) {
+                obj.image = obj.twitter_image;
+            } else if (obj.hasOwnProperty('twitter_meta_image')) {
+                obj.image = obj.twitter_meta_image;
+            } else if (obj.hasOwnProperty('prop_image')) {
+                obj.image = obj.prop_image;
+            }
+
+            self.images(opts.url, function(images) {
+                obj.images = images;
+                callback(obj);
+            });
+
+        });
+    }
 }
 
 exports.parseURL = function(url, callback){
