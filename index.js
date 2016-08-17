@@ -208,6 +208,7 @@ exports.scraper = function(opts, callback){
             // ---------- description -------
             og_description: 'meta[property="og:description"]@content',
             twitter_description: 'meta[name="twitter:description"]@content',
+            meta_description: 'meta[name="description"]@content',
             description: '[itemprop="description"]',
             // ---------- image --------------
             og_image: xDelay('meta[property="og:image"]@content'),
@@ -234,6 +235,8 @@ exports.scraper = function(opts, callback){
                 obj.description = obj.og_description;
             } else if (obj.hasOwnProperty('twitter_description')) {
                 obj.description = obj.twitter_description;
+            } else if (obj.hasOwnProperty('meta_description')) {
+                obj.description = obj.meta_description;
             }
 
             if (obj.hasOwnProperty('og_image')) {
