@@ -1,5 +1,9 @@
-var Xray = require('x-ray')
-	x = Xray(),
+var phantom = require('x-ray-phantom');
+var Nightmare = require('nightmare');
+var nightmare = Nightmare({ show: false });
+var Xray = require('x-ray');
+
+	x = Xray();
 	xDelay = Xray().delay('1s','10s'),
 	URL = require('url-parse'),
 	cheerio = require('cheerio')
@@ -197,65 +201,71 @@ exports.scraper = function(opts, callback){
 		});
 	}
 	else
-	{
-        var selectors = {
-            brand: '[itemprop="brand"]',
-            // --------- title --------------
-            og_title: 'meta[property="og:title"]@content',
-            twitter_title: 'meta[name="twitter:title"]@content',
-            meta_title: 'meta[name="title"]',
-            title: 'title',
-            // ---------- description -------
-            og_description: 'meta[property="og:description"]@content',
-            twitter_description: 'meta[name="twitter:description"]@content',
-            meta_description: 'meta[name="description"]@content',
-            description: '[itemprop="description"]',
-            // ---------- image --------------
-            og_image: xDelay('meta[property="og:image"]@content'),
-            // Some websites use twitter:image, some use twitter:image:src, make sure we cover both.
-            twitter_image: xDelay('meta[name="twitter:image"]@content'),
-            twitter_meta_image: xDelay('meta[property="twitter:image:src"]'), // need example website to test
-            prop_image: xDelay('[itemprop="image"]@src'),
-            // -------- price ----------------
-            price: '[itemprop="price"]'
-        };
+        {
+            nightmare.goto(opts.url)
+            .evaluate(function() {
+                return document.documentElement.outerHTML;
+            })
+            .end()
+            .then(function(body) {
+                var selectors = {
+                    brand: '[itemprop="brand"]',
+                    // --------- title --------------
+                    og_title: 'meta[property="og:title"]@content',
+                    twitter_title: 'meta[name="twitter:title"]@content',
+                    meta_title: 'meta[name="title"]',
+                    title: 'title',
+                    // ---------- description -------
+                    og_description: 'meta[property="og:description"]@content',
+                    twitter_description: 'meta[name="twitter:description"]@content',
+                    meta_description: 'meta[name="description"]@content',
+                    description: '[itemprop="description"]',
+                    // ---------- image --------------
+                    og_image: xDelay('meta[property="og:image"]@content'),
+                    // Some websites use twitter:image, some use twitter:image:src, make sure we cover both.
+                    twitter_image: xDelay('meta[name="twitter:image"]@content'),
+                    twitter_meta_image: xDelay('meta[property="twitter:image:src"]'), // need example website to test
+                    prop_image: xDelay('[itemprop="image"]@src'),
+                    // -------- price ----------------
+                    price: '[itemprop="price"]'
+                };
 
-		x(opts.url, selectors)
-        (function(err, obj){
-            // prefer og_title over twitter_title over meta_title over title
-            if (obj.hasOwnProperty('og_title')) {
-                obj.title = obj.og_title;
-            } else if (obj.hasOwnProperty('twitter_title')) {
-                obj.title = obj.twitter_title;
-            } else if (obj.hasOwnProperty('meta_title')) {
-                obj.title = obj.meta_title;
-            }
+                x(body, selectors)
+                (function(err, obj){
+                    // prefer og_title over twitter_title over meta_title over title
+                    if (obj.hasOwnProperty('og_title')) {
+                        obj.title = obj.og_title;
+                    } else if (obj.hasOwnProperty('twitter_title')) {
+                        obj.title = obj.twitter_title;
+                    } else if (obj.hasOwnProperty('meta_title')) {
+                        obj.title = obj.meta_title;
+                    }
 
-            if (obj.hasOwnProperty('og_description')) {
-                obj.description = obj.og_description;
-            } else if (obj.hasOwnProperty('twitter_description')) {
-                obj.description = obj.twitter_description;
-            } else if (obj.hasOwnProperty('meta_description')) {
-                obj.description = obj.meta_description;
-            }
+                    if (obj.hasOwnProperty('og_description')) {
+                        obj.description = obj.og_description;
+                    } else if (obj.hasOwnProperty('twitter_description')) {
+                        obj.description = obj.twitter_description;
+                    } else if (obj.hasOwnProperty('meta_description')) {
+                        obj.description = obj.meta_description;
+                    }
 
-            if (obj.hasOwnProperty('og_image')) {
-                obj.image = obj.og_image;
-            } else if (obj.hasOwnProperty('twitter_image')) {
-                obj.image = obj.twitter_image;
-            } else if (obj.hasOwnProperty('twitter_meta_image')) {
-                obj.image = obj.twitter_meta_image;
-            } else if (obj.hasOwnProperty('prop_image')) {
-                obj.image = obj.prop_image;
-            }
+                    if (obj.hasOwnProperty('og_image')) {
+                        obj.image = obj.og_image;
+                    } else if (obj.hasOwnProperty('twitter_image')) {
+                        obj.image = obj.twitter_image;
+                    } else if (obj.hasOwnProperty('twitter_meta_image')) {
+                        obj.image = obj.twitter_meta_image;
+                    } else if (obj.hasOwnProperty('prop_image')) {
+                        obj.image = obj.prop_image;
+                    }
 
-            self.images(opts.url, function(images) {
-                obj.images = images;
-                callback(obj);
+                    self.images(opts.url, function(images) {
+                        obj.images = images;
+                        callback(obj);
+                    });
+                });
             });
-
-        });
-    }
+        }
 }
 
 exports.parseURL = function(url, callback){
