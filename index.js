@@ -10,15 +10,13 @@ var Xray = require('x-ray');
 	request = require('request'),
 	probe = require('probe-image-size');
 
-exports.images = function(url, callback, scope){
-
-	request(url, function(err, resp, html){
-
+exports.images = function(html, callback, scope){
 		var $ = cheerio.load(html);
 		var minThreshold = 400;
 		var scope = (scope) ? scope : 'body';
 
 		var _images = [], _index = 0, totalImages = $(scope).find('img[src]').length;
+        console.log("got " + totalImages + " images");
 
 		$(scope).find('img[src]').each(function(){
 			var src = $(this).attr('src');
@@ -45,9 +43,6 @@ exports.images = function(url, callback, scope){
 				}
 			});
 		});
-
-	});
-
 }
 
 exports.sites = {
@@ -207,7 +202,7 @@ exports.scraper = function(opts, callback){
                 return document.documentElement.outerHTML;
             })
             .end()
-            .then(function(body) {
+            .then(function(html) {
                 var selectors = {
                     brand: '[itemprop="brand"]',
                     // --------- title --------------
@@ -230,8 +225,11 @@ exports.scraper = function(opts, callback){
                     price: '[itemprop="price"]'
                 };
 
-                x(body, selectors)
+                x(html, selectors)
                 (function(err, obj){
+                    if (err) {
+                        console.error("x-ray scrape error: " + err);
+                    }
                     // prefer og_title over twitter_title over meta_title over title
                     if (obj.hasOwnProperty('og_title')) {
                         obj.title = obj.og_title;
@@ -259,7 +257,7 @@ exports.scraper = function(opts, callback){
                         obj.image = obj.prop_image;
                     }
 
-                    self.images(opts.url, function(images) {
+                    self.images(html, function(images) {
                         obj.images = images;
                         callback(obj);
                     });
