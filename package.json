@@ -12,7 +12,9 @@
     "x-ray": "^2.1.0",
     "nightmare": "^2.6.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "it-each": "^0.3.1"
+  },
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec"
   },
