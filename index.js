@@ -1,6 +1,5 @@
 var phantom = require('x-ray-phantom');
 var Nightmare = require('nightmare');
-var nightmare = Nightmare({ show: false });
 var Xray = require('x-ray');
 
 	x = Xray();
@@ -197,6 +196,7 @@ exports.scraper = function(opts, callback){
 	}
 	else
         {
+            var nightmare = Nightmare({ show: false });
             nightmare.goto(opts.url)
             .evaluate(function() {
                 return document.documentElement.outerHTML;
@@ -262,6 +262,9 @@ exports.scraper = function(opts, callback){
                         callback(obj);
                     });
                 });
+            })
+            .catch(function (error) {
+                console.error('nightmare failed:', error);
             });
         }
 }
