@@ -2,6 +2,21 @@ var assert = require('assert');
 var util = require('../util');
 
 describe('util', function(){
+
+    describe('extractCurrencySymbol', function() {
+        it('valid', function(done) {
+          // C $249.99 -> CAD $
+          // $49.97 -> $
+          // CAD $33.90 -> CAD $
+            assert.equal(util.extractCurrencySymbol("199 CAD"), "CAD");
+            assert.equal(util.extractCurrencySymbol("CAD $33.90"), "CAD");
+            assert.equal(util.extractCurrencySymbol("199 USD"), "USD");
+            assert.equal(util.extractCurrencySymbol("USD $33.90"), "USD");
+            done();
+        });
+    });
+    return;
+
     describe('extractFloat', function(){
         it('valid', function(done){
             assert.equal(util.extractFloat("I have 1 pound"), 1);
@@ -24,6 +39,7 @@ describe('util', function(){
             assert.equal(util.extractFloat("I have £1,999 tomorrow"), 1999);
             assert.equal(util.extractFloat("£1,999.99 tomorrow"), 1999.99);
             assert.equal(util.extractFloat("£1,999,567 tomorrow"), 1999567);
+
             done();
         });
     });
