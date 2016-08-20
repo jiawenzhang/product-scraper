@@ -21,6 +21,9 @@ describe('util', function(){
             assert.equal(util.extractFloat("Yesterday I spent 340pounds."), 340);
             assert.equal(util.extractFloat("I spent £14.52 today, £17.30 tomorrow"), 14.52);
             assert.equal(util.extractFloat("I have 0 trees, £11.33 tomorrow"), 0);
+            assert.equal(util.extractFloat("I have £1,999 tomorrow"), 1999);
+            assert.equal(util.extractFloat("£1,999.99 tomorrow"), 1999.99);
+            assert.equal(util.extractFloat("£1,999,567 tomorrow"), 1999567);
             done();
         });
     });

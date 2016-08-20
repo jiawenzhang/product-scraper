@@ -1,6 +1,7 @@
 var phantom = require('x-ray-phantom');
 var Nightmare = require('nightmare');
 var Xray = require('x-ray');
+var util = require('./util');
 
 	x = Xray();
 	xDelay = Xray().delay('1s','10s'),
@@ -245,6 +246,10 @@ exports.scraper = function(opts, callback){
                         obj.description = obj.twitter_description;
                     } else if (obj.hasOwnProperty('meta_description')) {
                         obj.description = obj.meta_description;
+                    }
+
+                    if (obj.hasOwnProperty('price')) {
+                        obj.price_number = parseFloat(util.extractFloat(obj.price));
                     }
 
                     if (obj.hasOwnProperty('og_image')) {
