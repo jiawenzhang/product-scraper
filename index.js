@@ -250,10 +250,28 @@ exports.scraper = function(opts, callback){
 					obj.description = obj.description.trim();
 				}
 
+				// we first try to extract price from the price string [itemprop="price"]
+				// if failed, we try to extract from description and title
 				if (obj.hasOwnProperty('price')) {
 					obj.price = obj.price.trim();
 					obj.price_number = parseFloat(util.extractFloat(obj.price));
-					obj.currency = util.extractCurrencySymbol(obj.price);
+					if (obj.price_number) {
+						obj.currency = util.extractCurrencySymbol(obj.price);
+					}
+				}
+
+				if (!obj.price_number && obj.hasOwnProperty('description')) {
+					obj.price_number = parseFloat(util.extractFloat(obj.description));
+					if (obj.price_number) {
+						obj.currency = util.extractCurrencySymbol(obj.description);
+					}
+				}
+
+				if (!obj.price_number && obj.hasOwnProperty('title')) {
+					obj.price_number = parseFloat(util.extractFloat(obj.title));
+					if (obj.price_number) {
+						obj.currency = util.extractCurrencySymbol(obj.title);
+					}
 				}
 
 				if (obj.hasOwnProperty('og_image')) {

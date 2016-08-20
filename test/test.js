@@ -33,10 +33,10 @@ const tests = [
         expected: [title, description, image]
     },
     {
-        // price is in description, how to handle?
+        // price is in description
         store: "victoriassecret",
         url: "https://www.victoriassecret.com/lingerie/very-sexy/lace-slip-very-sexy?ProductID=305555&CatalogueType=OLS",
-        expected: [title, description, image]
+        expected: [title, description, price_number, currency, image]
     },
     //price is in description, and "$48.50  Clearance $29.99" how to interpret the Clearance price?
     //url = "https://www.victoriassecret.com/swimwear/all-sale-and-clearance/lace-up-bandeau?ProductID=305936&CatalogueType=OLS"
