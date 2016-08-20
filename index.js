@@ -233,22 +233,27 @@ exports.scraper = function(opts, callback){
                     }
                     // prefer og_title over twitter_title over meta_title over title
                     if (obj.hasOwnProperty('og_title')) {
-                        obj.title = obj.og_title;
+                        obj.title = obj.og_title.trim();
                     } else if (obj.hasOwnProperty('twitter_title')) {
-                        obj.title = obj.twitter_title;
+                        obj.title = obj.twitter_title.trim();
                     } else if (obj.hasOwnProperty('meta_title')) {
-                        obj.title = obj.meta_title;
-                    }
+                        obj.title = obj.meta_title.trim();
+                    } else if (obj.hasOwnProperty('title')) {
+                        obj.title = obj.title.trim();
+										}
 
                     if (obj.hasOwnProperty('og_description')) {
-                        obj.description = obj.og_description;
+                        obj.description = obj.og_description.trim();
                     } else if (obj.hasOwnProperty('twitter_description')) {
-                        obj.description = obj.twitter_description;
+                        obj.description = obj.twitter_description.trim();
                     } else if (obj.hasOwnProperty('meta_description')) {
-                        obj.description = obj.meta_description;
-                    }
+                        obj.description = obj.meta_description.trim();
+                    } else if (obj.hasOwnProperty('description')) {
+                        obj.description = obj.description.trim();
+										}
 
                     if (obj.hasOwnProperty('price')) {
+											  obj.price = obj.price.trim();
                         obj.price_number = parseFloat(util.extractFloat(obj.price));
                         obj.currency = util.extractCurrencySymbol(obj.price);
                     }
