@@ -1,0 +1,27 @@
+var assert = require('assert');
+var util = require('../util');
+
+describe('util', function(){
+    describe('extractFloat', function(){
+        it('valid', function(done){
+            assert.equal(util.extractFloat("I have 1 pound"), 1);
+            assert.equal(util.extractFloat("I have £3.50 to spend"), 3.50);
+            assert.equal(util.extractFloat("I have 23.00 pounds"), 23.00);
+            assert.equal(util.extractFloat("£27.33"), 27.33);
+            assert.equal(util.extractFloat("$4345.85"), 4345.85);
+            assert.equal(util.extractFloat("3.00"), 3.00);
+            assert.equal(util.extractFloat("7.0"), 7.0);
+            assert.equal(util.extractFloat("Should have 2.0."), 2.0);
+            assert.equal(util.extractFloat("Should have 15.20."), 15.20);
+            assert.equal(util.extractFloat("3.15"), 3.15);
+            assert.equal(util.extractFloat("I only have 5, not great."), 5);
+            assert.equal(util.extractFloat("34.23"), 34.23);
+            assert.equal(util.extractFloat("sdfg545.14sdfg"), 545.14);
+            assert.equal(util.extractFloat("Yesterday I spent £235468.13. Today I want to spend less."), 235468.13);
+            assert.equal(util.extractFloat("Yesterday I spent 340pounds."), 340);
+            assert.equal(util.extractFloat("I spent £14.52 today, £17.30 tomorrow"), 14.52);
+            assert.equal(util.extractFloat("I have 0 trees, £11.33 tomorrow"), 0);
+            done();
+        });
+    });
+});
