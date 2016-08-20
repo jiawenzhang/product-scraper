@@ -6,6 +6,8 @@ require('it-each')();
 const title = "title";
 const description = "description";
 const price = "price";
+const price_number = "price_number";
+const currency = "currency";
 const image = "image";
 const images = "images";
 
@@ -18,12 +20,12 @@ const tests = [
     {
         store: "ebay",
         url: "http://deals.ebay.ca/5003428771_Apple_11_6__MacBook_Air_MD223LL_A_i5_4GB_Memory_64GB_Flash_Storage?_trksid=p2050601.m1256&_trkparms=algo%3DDailyDeals%26clkid%3D7594163878637097118",
-        expected: [title, description, price, images]
+        expected: [title, description, price_number, currency, images]
     },
     {
         store: "forever21",
         url: "http://www.forever21.com/CA/Product/Product.aspx?br=LOVE21&category=dress&productid=2000237537",
-        expected: [title, description, price, image]
+        expected: [title, description, price_number, currency, image]
     },
     {
         store: "victoriassecret",
@@ -33,7 +35,7 @@ const tests = [
     {
         store: "walmart",
         url: "http://www.walmart.ca/en/ip/16-toro-wheel-cover-4-pack/6000069712155",
-        expected: [title, description, price, image]
+        expected: [title, description, price_number, currency, image]
     }
 ];
 
@@ -47,8 +49,8 @@ describe('Testing scrapering urls', function() {
                 if (test.expected.hasOwnProperty(key)) {
                     var property = test.expected[key];
                     if (!data.hasOwnProperty(property)) {
-                        console.log("missing " + property);
-                        console.log(JSON.stringify(data));
+                        console.error("missing " + property);
+                        console.error(JSON.stringify(data, null, 2));
                         throw err;
                     }
                 }

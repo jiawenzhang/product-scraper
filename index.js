@@ -152,7 +152,7 @@ exports.sites = {
 		};
 
 	}
-	
+
 };
 
 exports.scraper = function(opts, callback){
@@ -250,6 +250,7 @@ exports.scraper = function(opts, callback){
 
                     if (obj.hasOwnProperty('price')) {
                         obj.price_number = parseFloat(util.extractFloat(obj.price));
+                        obj.currency = util.extractCurrencySymbol(obj.price);
                     }
 
                     if (obj.hasOwnProperty('og_image')) {
