@@ -33,10 +33,22 @@ const tests = [
         expected: [title, description, image]
     },
     {
+        // price is in description, how to handle?
+        store: "victoriassecret",
+        url: "https://www.victoriassecret.com/lingerie/very-sexy/lace-slip-very-sexy?ProductID=305555&CatalogueType=OLS",
+        expected: [title, description, image]
+    },
+    //price is in description, and "$48.50  Clearance $29.99" how to interpret the Clearance price?
+    //url = "https://www.victoriassecret.com/swimwear/all-sale-and-clearance/lace-up-bandeau?ProductID=305936&CatalogueType=OLS"
+    {
         store: "walmart",
         url: "http://www.walmart.ca/en/ip/16-toro-wheel-cover-4-pack/6000069712155",
         expected: [title, description, price_number, currency, image]
     }
+    //Fail to extract price and images
+    //<span id="listPrice" class="ora">$85.00</span>
+    //<span id="offerPrice" class="sale">CLEARANCE $59.50</span>
+    //http://www.thebay.com/webapp/wcs/stores/servlet/en/thebay/shoes/rylander-flax-linen-sneakers-0108-816597340005--24
 ];
 
 
