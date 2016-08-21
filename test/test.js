@@ -58,7 +58,16 @@ const tests = [
     store: "etsy",
     url: "https://www.etsy.com/ca/listing/240316857/apple-watch-band-kit-horween-leather?ga_order=most_relevant&ga_search_type=all&ga_view_type=gallery&ga_search_query=wearable%20tech&ref=sc_gallery_2&plkey=c11c76e3a577e779b907c627129228b4902416f5:240316857",
     expected: [title, description, price_number, currency, image]
+  },
+  {
+    //<meta property="product:price:amount" content="38.00">
+    //<meta property="product:price:currency" content="USD">
+    //Fixme: ideally, this should go to site specific scraper instead of general scraper
+    store: "dollskill",
+    url: "http://www.dollskill.com/anti-creeper-sneaker.html",
+    expected: [title, description, price_number, currency, image]
   }
+
 
 
 
@@ -66,6 +75,15 @@ const tests = [
   //<span id="listPrice" class="ora">$85.00</span>
   //<span id="offerPrice" class="sale">CLEARANCE $59.50</span>
   //http://www.thebay.com/webapp/wcs/stores/servlet/en/thebay/shoes/rylander-flax-linen-sneakers-0108-816597340005--24
+
+  //Fail to extract price
+  // <span class="mainPrice ng-scope ng-binding" ng-if="!pr.prodData.prices.hasPromo" ng-class="{
+  //               ogPrice : pr.prodData.prices.hasSale
+  //           }">
+  //           CA$59
+  //           <!-- ngIf: pr.prodData.prices.hasRange -->
+  //       </span>
+  //http://www.urbanoutfitters.com/ca/en/catalog/productdetail.jsp?id=40472300&category=W_APP_VINTAGE
 ];
 
 
