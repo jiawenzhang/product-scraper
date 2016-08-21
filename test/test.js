@@ -52,6 +52,12 @@ const tests = [
     store: "asos",
     url: "http://www.asos.com/nike/nike-signal-cropped-t-shirt/prod/pgeproduct.aspx?iid=6394027&clr=Carbonheatherblack&cid=5897&pgesize=36&pge=0&totalstyles=282&gridsize=3&gridrow=2&gridcolumn=3",
     expected: [title, description, price_number, currency, image]
+  },
+  {
+    //<meta itemprop="currency" content="CAD">
+    store: "etsy",
+    url: "https://www.etsy.com/ca/listing/240316857/apple-watch-band-kit-horween-leather?ga_order=most_relevant&ga_search_type=all&ga_view_type=gallery&ga_search_query=wearable%20tech&ref=sc_gallery_2&plkey=c11c76e3a577e779b907c627129228b4902416f5:240316857",
+    expected: [title, description, price_number, currency, image]
   }
 
 
@@ -65,7 +71,7 @@ const tests = [
 
 describe('Testing scrapering urls', function() {
   it.each(tests, 'loads', function(test, next) {
-    this.timeout(20000);
+    this.timeout(200000);
     console.log(test.store);
     scraper.init(test.url, function(data) {
       for (var key in test.expected) {

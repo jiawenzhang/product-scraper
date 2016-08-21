@@ -222,7 +222,9 @@ exports.scraper = function(opts, callback){
 				prop_image: xDelay('[itemprop="image"]@src'),
 				// -------- price ----------------
 				price_itemprop: '[itemprop="price"]',
-				price_itemprop_content: '[itemprop="price"]@content'
+				price_itemprop_content: '[itemprop="price"]@content',
+				// -------- currency -------------
+				currency_itemprop_content: '[itemprop="currency"]@content'
 			};
 
 			x(html, selectors)
@@ -251,32 +253,42 @@ exports.scraper = function(opts, callback){
 					obj.description = obj.description.trim();
 				}
 
+				// extract price string
 				if (obj.hasOwnProperty('price_itemprop')) {
 					obj.price = obj.price_itemprop.trim();
 				} else if (obj.hasOwnProperty('price_itemprop_content')) {
 					obj.price = obj.price_itemprop_content.trim();
 				}
 
-				// we first try to extract price from the price string [itemprop="price"]
-				// if failed, we try to extract from description and title
+
+				// extract currency
+				if (obj.hasOwnProperty("currency_itemprop_content")) {
+					// get the currency from currency_itemprop_content first, if failed
+					// we will try to extract it from the price string below
+					obj.currency = obj.currency_itemprop_content;
+				}
+
+				// extract price number and currency
+				// try to extract price from the price string
+				// if failed, we then try to extract it from description and title
 				if (obj.hasOwnProperty('price')) {
 					obj.price = obj.price.trim();
 					obj.price_number = parseFloat(util.extractFloat(obj.price));
-					if (obj.price_number) {
+					if (obj.price_number && !obj.currency) {
 						obj.currency = util.extractCurrencySymbol(obj.price);
 					}
 				}
 
 				if (!obj.price_number && obj.hasOwnProperty('description')) {
 					obj.price_number = parseFloat(util.extractFloat(obj.description));
-					if (obj.price_number) {
+					if (obj.price_number && !obj.currency) {
 						obj.currency = util.extractCurrencySymbol(obj.description);
 					}
 				}
 
 				if (!obj.price_number && obj.hasOwnProperty('title')) {
 					obj.price_number = parseFloat(util.extractFloat(obj.title));
-					if (obj.price_number) {
+					if (obj.price_number && !obj.currency) {
 						obj.currency = util.extractCurrencySymbol(obj.title);
 					}
 				}
@@ -321,13 +333,13 @@ exports.parseURL = function(url, callback){
 			product_id: parse.pathname.replace('/site/','') + parse.query
 		}, callback);
 	}
-	else if(parse.host == 'www.etsy.com')
-	{
-		this.scraper({
-			site: 'etsy',
-			product_id: parse.pathname.replace('/listing/','')
-		}, callback);
-	}
+	// else if(parse.host == 'www.etsy.com')
+	// {
+	// 	this.scraper({
+	// 		site: 'etsy',
+	// 		product_id: parse.pathname.replace('/listing/','')
+	// 	}, callback);
+	// }
 	else if(parse.host == 'www.target.com')
 	{
 		var matches = parse.pathname.match(/\/p\/(.*)/);
