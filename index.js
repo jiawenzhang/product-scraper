@@ -221,7 +221,8 @@ exports.scraper = function(opts, callback){
 				twitter_meta_image: xDelay('meta[property="twitter:image:src"]'), // need example website to test
 				prop_image: xDelay('[itemprop="image"]@src'),
 				// -------- price ----------------
-				price: '[itemprop="price"]'
+				price_itemprop: '[itemprop="price"]',
+				price_itemprop_content: '[itemprop="price"]@content'
 			};
 
 			x(html, selectors)
@@ -248,6 +249,12 @@ exports.scraper = function(opts, callback){
 					obj.description = obj.meta_description.trim();
 				} else if (obj.hasOwnProperty('description')) {
 					obj.description = obj.description.trim();
+				}
+
+				if (obj.hasOwnProperty('price_itemprop')) {
+					obj.price = obj.price_itemprop.trim();
+				} else if (obj.hasOwnProperty('price_itemprop_content')) {
+					obj.price = obj.price_itemprop_content.trim();
 				}
 
 				// we first try to extract price from the price string [itemprop="price"]

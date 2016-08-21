@@ -44,6 +44,12 @@ const tests = [
     store: "walmart",
     url: "http://www.walmart.ca/en/ip/16-toro-wheel-cover-4-pack/6000069712155",
     expected: [title, description, price_number, currency, image]
+  },
+  {
+    //<meta itemprop="price" content="C$53.85">
+    store: "asos",
+    url: "http://www.asos.com/nike/nike-signal-cropped-t-shirt/prod/pgeproduct.aspx?iid=6394027&clr=Carbonheatherblack&cid=5897&pgesize=36&pge=0&totalstyles=282&gridsize=3&gridrow=2&gridcolumn=3",
+    expected: [title, description, price_number, currency, image]
   }
   //Fail to extract price and images
   //<span id="listPrice" class="ora">$85.00</span>
