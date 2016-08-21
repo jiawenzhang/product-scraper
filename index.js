@@ -202,6 +202,21 @@ exports.scraper = function(opts, callback){
 		})
 		.end()
 		.then(function(html) {
+			// possible places to extract price string
+			var priceStrSelectors = [
+				'[itemprop="price"]',
+				'[itemprop="price"]@content',
+				'meta[property="product:price:amount"]@content',
+				'meta[name="twitter:data1"]@content',
+			];
+
+			// possible places to extract currency
+			var currencySelectors = [
+				'[itemprop="currency"]@content',
+				'meta[property="product:price:currency"]@content',
+				'meta[itemprop="priceCurrency"]@content',
+			];
+
 			var selectors = {
 				brand: '[itemprop="brand"]',
 				// --------- title --------------
@@ -220,16 +235,15 @@ exports.scraper = function(opts, callback){
 				twitter_image: xDelay('meta[name="twitter:image"]@content'),
 				twitter_meta_image: xDelay('meta[property="twitter:image:src"]'), // need example website to test
 				prop_image: xDelay('[itemprop="image"]@src'),
-				// -------- price ----------------
-				price_itemprop: '[itemprop="price"]',
-				price_itemprop_content: '[itemprop="price"]@content',
-				price_meta_product_amount: 'meta[property="product:price:amount"]@content',
-				twitter_data1: 'meta[name="twitter:data1"]@content',
-				// -------- currency -------------
-				currency_itemprop_content: '[itemprop="currency"]@content',
-				currency_meta_product: 'meta[property="product:price:currency"]@content',
-				currency_meta_price_currency: 'meta[itemprop="priceCurrency"]@content',
 			};
+
+			for (var i=0; i<priceStrSelectors.length; i++) {
+				selectors[priceStrSelectors[i]] = priceStrSelectors[i];
+			}
+
+			for (var i=0; i<currencySelectors.length; i++) {
+				selectors[currencySelectors[i]] = currencySelectors[i];
+			}
 
 			x(html, selectors)
 			(function(err, obj){
@@ -258,26 +272,19 @@ exports.scraper = function(opts, callback){
 				}
 
 				// extract price string
-				if (obj.hasOwnProperty('price_itemprop')) {
-					obj.price = obj.price_itemprop.trim();
-				} else if (obj.hasOwnProperty('price_itemprop_content')) {
-					obj.price = obj.price_itemprop_content.trim();
-				} else if (obj.hasOwnProperty('price_meta_product_amount')) {
-					obj.price = obj.price_meta_product_amount.trim();
-				} else if (obj.hasOwnProperty("twitter_data1")) {
-					obj.price = obj.twitter_data1.trim();
+				for (var i=0; i<priceStrSelectors.length; i++) {
+					if (obj[priceStrSelectors[i]]) {
+						obj.price = obj[priceStrSelectors[i]].trim();
+						break;
+					}
 				}
 
-
 				// extract currency
-				if (obj.hasOwnProperty("currency_itemprop_content")) {
-					// get the currency from currency_itemprop_content first, if failed
-					// we will try to extract it from the price string below
-					obj.currency = obj.currency_itemprop_content;
-				} else if (obj.hasOwnProperty("currency_meta_product")) {
-					obj.currency = obj.currency_meta_product;
-				} else if (obj.hasOwnProperty("currency_meta_price_currency")) {
-					obj.currency = obj.currency_meta_price_currency;
+				for (var i=0; i<currencySelectors.length; i++) {
+					if (obj[currencySelectors[i]]) {
+						obj.currency = obj[currencySelectors[i]];
+						break;
+					}
 				}
 
 				// extract price number and currency

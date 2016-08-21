@@ -92,6 +92,12 @@ const tests = [
   //<span class="price-original" title="Regular Price">$20.50</span>
   //<span class="price-sales" title="Sale Price">$16.40</span>
   //http://www.hottopic.com/product/pokemon-eevee-evolutions-t-shirt/10489912.html?cgid=pop-culture-shop-by-license-pokemon#cm_sp=Homepage-_-Grid2-_-Pokemon&start=3
+
+  //Fail to extract currency
+  // <span class="priceTaxValueNumber">
+  //               6,99 €
+  //           </span>
+  //"https://m.detskahracka.sk/p/17245/magicke-pero-auta"
 ];
 
 
