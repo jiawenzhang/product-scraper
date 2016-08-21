@@ -67,7 +67,15 @@ const tests = [
     store: "dollskill",
     url: "http://www.dollskill.com/anti-creeper-sneaker.html",
     expected: [title, description, price_number, currency, image]
+  },
+  {
+    //'meta[itemprop="priceCurrency"]@content'
+    store: "zumiez",
+    url: "http://www.zumiez.com/sketchy-tank-flip-flop-high-white-t-shirt.html",
+    expected: [title, description, price_number, currency, image]
   }
+
+
 
 
 
