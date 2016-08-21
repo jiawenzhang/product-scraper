@@ -13,6 +13,7 @@ const images = "images";
 
 const tests = [
   {
+    // false positive price from description
     store: "fancy",
     url: "https://fancy.com/things/1224643338880157789/Women%27s-1960%27s-Retro-Oversize-Round-Sunglasses-A259?utm=newest",
     expected: [title, description]
@@ -84,6 +85,13 @@ const tests = [
   //           <!-- ngIf: pr.prodData.prices.hasRange -->
   //       </span>
   //http://www.urbanoutfitters.com/ca/en/catalog/productdetail.jsp?id=40472300&category=W_APP_VINTAGE
+
+
+  //Fail to extract price - worse, extract the wrong price from description,
+  //as there is "100% cotton" and a currency symbol "P" in description
+  //<span class="price-original" title="Regular Price">$20.50</span>
+  //<span class="price-sales" title="Sale Price">$16.40</span>
+  //http://www.hottopic.com/product/pokemon-eevee-evolutions-t-shirt/10489912.html?cgid=pop-culture-shop-by-license-pokemon#cm_sp=Homepage-_-Grid2-_-Pokemon&start=3
 ];
 
 
@@ -92,10 +100,11 @@ describe('Testing scrapering urls', function() {
     this.timeout(200000);
     console.log(test.store);
     scraper.init(test.url, function(data) {
+      console.log(data.currency + " " + data.price_number + "\n");
       for (var key in test.expected) {
         if (test.expected.hasOwnProperty(key)) {
           var property = test.expected[key];
-          if (!data.hasOwnProperty(property)) {
+          if (!data[property]) {
             console.error("missing " + property);
             console.error(JSON.stringify(data, null, 2));
             throw err;

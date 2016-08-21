@@ -281,24 +281,38 @@ exports.scraper = function(opts, callback){
 				// try to extract price from the price string
 				// if failed, we then try to extract it from description and title
 				if (obj.hasOwnProperty('price')) {
-					obj.price = obj.price.trim();
 					obj.price_number = parseFloat(util.extractFloat(obj.price));
-					if (obj.price_number && !obj.currency) {
+					// currency might have already been extracted in extract currency step, prefer that
+					if (!obj.currency) {
 						obj.currency = util.extractCurrencySymbol(obj.price);
 					}
 				}
 
 				if (!obj.price_number && obj.hasOwnProperty('description')) {
-					obj.price_number = parseFloat(util.extractFloat(obj.description));
-					if (obj.price_number && !obj.currency) {
-						obj.currency = util.extractCurrencySymbol(obj.description);
+					// We only accept the price if both the number and currency are extracted,
+					// This will exclude false positive result from strings that contain only a number like "100% satisfaction"
+					var price_number = parseFloat(util.extractFloat(obj.description));
+					var currency = util.extractCurrencySymbol(obj.description);
+					if (price_number && currency) {
+						obj.price_number = price_number;
+						// currency might have already been extracted in extract currency step, prefer that
+						if (!obj.currency) {
+							obj.currency = currency;
+						}
 					}
 				}
 
 				if (!obj.price_number && obj.hasOwnProperty('title')) {
-					obj.price_number = parseFloat(util.extractFloat(obj.title));
-					if (obj.price_number && !obj.currency) {
-						obj.currency = util.extractCurrencySymbol(obj.title);
+					// We only accept the price if both the number and currency are extracted,
+					// This will exclude false positive result from strings that contain only a number like "100% satisfaction"
+					var price_number = parseFloat(util.extractFloat(obj.title));
+					var currency = util.extractCurrencySymbol(obj.title);
+					if (price_number && currency) {
+						obj.price_number = price_number;
+						// currency might have already been extracted in extract currency step, prefer that
+						if (!obj.currency) {
+							obj.currency = currency;
+						}
 					}
 				}
 
