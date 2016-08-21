@@ -111,6 +111,26 @@ const tests = [
   //               6,99 €
   //           </span>
   //"https://m.detskahracka.sk/p/17245/magicke-pero-auta"
+
+  //Fail to extract currency code CAD (it extracts $)
+  //http://www.kijiji.ca/v-sailboat/oshawa-durham-region/sailboat-hunter-34/1187671894
+
+  //Fail to extract price
+  //<span class="regular-price" id="product-price-79">
+  //    <span class="price">$125.00</span>
+  //</span>
+  //"http://epipemods.com/pipes/steampipe-2400.html"
+
+  //Fail to extract price
+  // <span class="price">5.99</span>
+  // <span class="price_currency_code">EUR</span>
+  //http://www.japonshop.com/producto/miso_rojo_con_dashi_no_moto_liquido
+
+  //Fail to extract price
+  // <h3 class="product_view">Price</h3>
+  // <p>$19.99 USD</p>
+  //http://www.kt8merch.com/store/pages/28961/__LIGHTS_-Midnight_Machines-_Clear_Vinyl_.htm
+
 ];
 
 
