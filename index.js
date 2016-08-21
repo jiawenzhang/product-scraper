@@ -228,6 +228,7 @@ exports.scraper = function(opts, callback){
 				// -------- currency -------------
 				currency_itemprop_content: '[itemprop="currency"]@content',
 				currency_meta_product: 'meta[property="product:price:currency"]@content',
+				currency_meta_price_currency: 'meta[itemprop="priceCurrency"]@content',
 			};
 
 			x(html, selectors)
@@ -275,6 +276,8 @@ exports.scraper = function(opts, callback){
 					obj.currency = obj.currency_itemprop_content;
 				} else if (obj.hasOwnProperty("currency_meta_product")) {
 					obj.currency = obj.currency_meta_product;
+				} else if (obj.hasOwnProperty("currency_meta_price_currency")) {
+					obj.currency = obj.currency_meta_price_currency;
 				}
 
 				// extract price number and currency
