@@ -206,6 +206,7 @@ exports.scraper = function(opts, callback){
 			var priceStrSelectors = [
 				'[itemprop="price"]',
 				'[itemprop="price"]@content',
+				'meta[property="og:price:amount"]@content',
 				'meta[property="product:price:amount"]@content',
 				'meta[name="twitter:data1"]@content',
 			];
@@ -213,6 +214,7 @@ exports.scraper = function(opts, callback){
 			// possible places to extract currency
 			var currencySelectors = [
 				'[itemprop="currency"]@content',
+				'meta[property="og:price:currency"]@content',
 				'meta[property="product:price:currency"]@content',
 				'meta[itemprop="priceCurrency"]@content',
 			];

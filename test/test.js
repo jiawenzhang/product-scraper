@@ -74,8 +74,13 @@ const tests = [
     url: "http://www.zumiez.com/sketchy-tank-flip-flop-high-white-t-shirt.html",
     expected: [title, description, price_number, currency, image]
   }
-
-
+  {
+    //'meta[property="og:price:amount"]@content'
+    //'meta[property="og:price:currency"]@content'
+    store: "thegldshop",
+    url: "https://www.thegldshop.com/products/make-a-set?variant=4111062341",
+    expected: [title, description, price_number, currency, image]
+  }
 
 
 
