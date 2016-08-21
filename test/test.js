@@ -47,10 +47,15 @@ const tests = [
   },
   {
     //<meta itemprop="price" content="C$53.85">
+    //C$ could mean Canadian dollar or Nicaraguan córdoba, how to distinguish?
+    //In this url, it means Canadian dollar
     store: "asos",
     url: "http://www.asos.com/nike/nike-signal-cropped-t-shirt/prod/pgeproduct.aspx?iid=6394027&clr=Carbonheatherblack&cid=5897&pgesize=36&pge=0&totalstyles=282&gridsize=3&gridrow=2&gridcolumn=3",
     expected: [title, description, price_number, currency, image]
   }
+
+
+
   //Fail to extract price and images
   //<span id="listPrice" class="ora">$85.00</span>
   //<span id="offerPrice" class="sale">CLEARANCE $59.50</span>

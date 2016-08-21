@@ -12,7 +12,12 @@ describe('util', function(){
             assert.equal(util.extractCurrencySymbol("USD $33.90"), "USD");
             assert.equal(util.extractCurrencySymbol("€ EUR 33.90"), "EUR");
 
-            assert.equal(util.extractCurrencySymbol("$ 33.90"), "$"); // could be USD, CAD or many others, how to distinguish?
+            // $ could be USD, CAD or many others, how to distinguish?
+            assert.equal(util.extractCurrencySymbol("$ 33.90"), "$");
+
+            // C$ could mean Canadian dollar or Nicaraguan córdoba, how to distinguish?
+            assert.equal(util.extractCurrencySymbol("C$33.90"), "C$");
+            
             assert.equal(util.extractCurrencySymbol("¥ 33.90"), "¥");
             assert.equal(util.extractCurrencySymbol("$ 33.90 ¥"), "$");
             assert.equal(util.extractCurrencySymbol("€33.90"), "€");
