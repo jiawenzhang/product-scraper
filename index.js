@@ -224,9 +224,10 @@ exports.scraper = function(opts, callback){
 				price_itemprop: '[itemprop="price"]',
 				price_itemprop_content: '[itemprop="price"]@content',
 				price_meta_product_amount: 'meta[property="product:price:amount"]@content',
+				twitter_data1: 'meta[name="twitter:data1"]@content',
 				// -------- currency -------------
 				currency_itemprop_content: '[itemprop="currency"]@content',
-				currency_meta_product: 'meta[property="product:price:currency"]@content'
+				currency_meta_product: 'meta[property="product:price:currency"]@content',
 			};
 
 			x(html, selectors)
@@ -262,6 +263,8 @@ exports.scraper = function(opts, callback){
 					obj.price = obj.price_itemprop_content.trim();
 				} else if (obj.hasOwnProperty('price_meta_product_amount')) {
 					obj.price = obj.price_meta_product_amount.trim();
+				} else if (obj.hasOwnProperty("twitter_data1")) {
+					obj.price = obj.twitter_data1.trim();
 				}
 
 
