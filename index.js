@@ -281,13 +281,20 @@ exports.scraper = function(opts, callback){
 					}
 				}
 
-				// extract currency
+				// extract currency, the string extracted from the selectors could be a code or a symbol
+				var currency = null;
 				for (var i=0; i<currencySelectors.length; i++) {
-					if (obj[currencySelectors[i]]) {
-						obj.currency = obj[currencySelectors[i]];
+					if (!obj[currencySelectors[i]]) {
+						continue;
+					}
+
+					currency = obj[currencySelectors[i]];
+					if (util.isCurrencyCode(currency)) {
+						// prefer currency code
 						break;
 					}
 				}
+				obj.currency = util.toCurrencyJSON(currency);
 
 				// extract price number and currency
 				// try to extract price from the price string
@@ -296,7 +303,7 @@ exports.scraper = function(opts, callback){
 					obj.price_number = parseFloat(util.extractFloat(obj.price));
 					// currency might have already been extracted in extract currency step, prefer that
 					if (!obj.currency) {
-						obj.currency = util.extractCurrencySymbol(obj.price);
+						obj.currency = util.extractCurrency(obj.price);
 					}
 				}
 
@@ -304,7 +311,7 @@ exports.scraper = function(opts, callback){
 					// We only accept the price if both the number and currency are extracted,
 					// This will exclude false positive result from strings that contain only a number like "100% satisfaction"
 					var price_number = parseFloat(util.extractFloat(obj.description));
-					var currency = util.extractCurrencySymbol(obj.description);
+					var currency = util.extractCurrency(obj.description);
 					if (price_number && currency) {
 						obj.price_number = price_number;
 						// currency might have already been extracted in extract currency step, prefer that
@@ -318,7 +325,7 @@ exports.scraper = function(opts, callback){
 					// We only accept the price if both the number and currency are extracted,
 					// This will exclude false positive result from strings that contain only a number like "100% satisfaction"
 					var price_number = parseFloat(util.extractFloat(obj.title));
-					var currency = util.extractCurrencySymbol(obj.title);
+					var currency = util.extractCurrency(obj.title);
 					if (price_number && currency) {
 						obj.price_number = price_number;
 						// currency might have already been extracted in extract currency step, prefer that

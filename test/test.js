@@ -73,7 +73,7 @@ const tests = [
     store: "zumiez",
     url: "http://www.zumiez.com/sketchy-tank-flip-flop-high-white-t-shirt.html",
     expected: [title, description, price_number, currency, image]
-  }
+  },
   {
     //'meta[property="og:price:amount"]@content'
     //'meta[property="og:price:currency"]@content'
@@ -139,7 +139,7 @@ describe('Testing scrapering urls', function() {
     this.timeout(200000);
     console.log(test.store);
     scraper.init(test.url, function(data) {
-      console.log(data.currency + " " + data.price_number + "\n");
+      console.log(JSON.stringify(data.currency) + " " + data.price_number + "\n");
       for (var key in test.expected) {
         if (test.expected.hasOwnProperty(key)) {
           var property = test.expected[key];
