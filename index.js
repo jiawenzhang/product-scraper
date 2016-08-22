@@ -347,6 +347,9 @@ exports.scraper = function(opts, callback){
 
 				self.images(html, function(images) {
 					obj.images = images;
+					if (!obj.image && images.length > 0) {
+						obj.image = images[0].src;
+					}
 					callback(obj);
 				});
 			});
