@@ -130,6 +130,9 @@ const tests = [
   // <h3 class="product_view">Price</h3>
   // <p>$19.99 USD</p>
   //http://www.kt8merch.com/store/pages/28961/__LIGHTS_-Midnight_Machines-_Clear_Vinyl_.htm
+  
+  //Extracted wrong currency
+  //http://www.ebay.ca/itm/Blank-Complete-Skateboard-Stained-RED-7-75-034-Skateboards-Ready-to-rideRed-/320883340976?&_trksid=p2056016.m2516.l5255
 
 ];
 

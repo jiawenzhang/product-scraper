@@ -26,6 +26,10 @@ exports.images = function(imageUrls, callback){
 
 			_index++;
 			if (_index == totalImages) {
+				// prefer larger images
+				_images.sort(function(a, b){
+					return b.width - a.width;
+				});
 				if (typeof callback == 'function') callback(_images);
 			}
 		});
