@@ -10,36 +10,23 @@ cheerio = require('cheerio')
 request = require('request'),
 probe = require('probe-image-size');
 
-exports.images = function(html, callback, scope){
-	var $ = cheerio.load(html);
-	var minThreshold = 400;
-	var scope = (scope) ? scope : 'body';
+exports.images = function(imageUrls, callback){
+	var minThreshold = 100;
+	var _images = [], _index = 0, totalImages = imageUrls.length;
 
-	var _images = [], _index = 0, totalImages = $(scope).find('img[src]').length;
-	console.log("got " + totalImages + " images");
-
-	$(scope).find('img[src]').each(function(){
-		var src = $(this).attr('src');
-		probe({ url: src, timeout: 2500 }, function(err, result){
-			if(result && result.mime !== 'image/gif' && result.width > minThreshold)
-			{
+	imageUrls.forEach(function(url) {
+		probe({ url: url, timeout: 2500 }, function(err, result) {
+			if (result && result.mime !== 'image/gif' && result.width > minThreshold) {
 				_images.push({
-					width: result.width,
-					height: result.height,
-					src: src
+					url: url,
+					w: result.width,
+					h: result.height
 				});
 			}
 
 			_index++;
-			if(_index == totalImages)
-			{
-				_images.sort(function(a,b){
-					return b.width - a.width;
-				});
-
-				_images = _images.splice(0, 4);
-
-				if(typeof callback == 'function') callback(_images);
+			if (_index == totalImages) {
+				if (typeof callback == 'function') callback(_images);
 			}
 		});
 	});
@@ -181,10 +168,10 @@ exports.scraper = function(opts, callback){
 
 			if(lookup.images)
 			{
-				self.images(_obj.url, function(images){
-					_obj.images = images;
+				//self.images(_obj.url, function(images){
+				//	_obj.images = images;
 					callback(_obj);
-				});
+				//});
 			}
 			else
 			{
@@ -345,11 +332,31 @@ exports.scraper = function(opts, callback){
 					obj.image = obj.prop_image;
 				}
 
-				self.images(html, function(images) {
-					obj.images = images;
-					if (!obj.image && images.length > 0) {
-						obj.image = images[0].src;
+				var imageUrls = self.allImages(html);
+
+				if (obj.image && imageUrls.indexOf(obj.image) == -1) {
+						// obj.image does not exist in imageUrls, add it
+						imageUrls.push(obj.image);
+				}
+
+				console.log("got " + imageUrls.length + " images");
+
+				self.images(imageUrls, function(images) {
+					console.log("filtered images " + images.length);
+					// make sure the obj.image is at the top of the list
+					if (obj.image) {
+						for (var i=0; i< images.length; i++) {
+							if (images[i].url === obj.image) {
+								var imageObject = images[i];
+								images.splice(i, 1);
+								images.unshift(imageObject);
+								break;
+							}
+						}
 					}
+
+					obj.images = images;
+					console.log("final size " + obj.images.length);
 					callback(obj);
 				});
 			});
@@ -358,6 +365,18 @@ exports.scraper = function(opts, callback){
 			console.error('nightmare failed:', error);
 		});
 	}
+}
+
+exports.allImages = function(html) {
+	var $ = cheerio.load(html);
+	var scope = (scope) ? scope : 'body';
+
+	var imageUrls = [];
+	$(scope).find('img[src]').each(function() {
+		imageUrls.push($(this).attr('src'));
+	});
+
+	return imageUrls;
 }
 
 exports.parseURL = function(url, callback){
