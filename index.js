@@ -344,18 +344,25 @@ exports.scraper = function(opts, callback){
 				}
 
 				console.log("got " + imageUrls.length + " images");
-
 				self.images(imageUrls, function(images) {
 					console.log("filtered images " + images.length);
 					// make sure the obj.image is at the top of the list
 					if (obj.image) {
+						var found = false;
 						for (var i=0; i< images.length; i++) {
 							if (images[i].url === obj.image) {
 								var imageObject = images[i];
 								images.splice(i, 1);
 								images.unshift(imageObject);
+								found = true;
 								break;
 							}
+						}
+						if (!found) {
+							// probe fails to get the width and height of obj.image, example:
+							// "https://dm.victoriassecret.com/product/404x539/V588032.jpg"
+							var imageObject = {url: obj.image, w: null, h: null};
+							images.unshift(imageObject);
 						}
 					}
 
